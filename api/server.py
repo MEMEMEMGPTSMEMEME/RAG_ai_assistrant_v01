@@ -3,20 +3,13 @@
 from flask import Flask, request, jsonify
 from urllib.parse import urlparse
 from dotenv import load_dotenv
-import os
-import traceback
-import threading
-import subprocess
-import pickle
-import faiss
+import os, traceback, threading, subprocess, pickle, faiss
 
 from sentence_transformers import SentenceTransformer
-
-from pipeline.data_ingestion import run_data_ingestion
+from pipeline.run_all import run_all_pipeline
 from core.embedder import INDEX_PATH, METADATA_PATH
 
 load_dotenv()
-
 app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
@@ -40,14 +33,14 @@ def start_data_ingestion():
             return jsonify({"error": "seed_urls (list) is required"}), 400
 
         print(f"[INFO] 수집 시작: {seed_urls}")
-        run_data_ingestion(seed_urls)
+        run_all_pipeline(seed_urls)
 
-        # 🔁 Git 자동 푸시 (비동기 실행)
+        # Git 자동 푸시 (비동기 실행)
         def git_push():
             try:
                 print("[GIT] 자동 푸시 시작")
                 subprocess.run(["python", "scripts/auto_git_push.py"], check=True)
-                print("[GIT] 자동 푸시 완료 ✅")
+                print("[GIT] 자동 푸시 완료")
             except Exception as e:
                 print(f"[GIT ERROR] 자동 푸시 실패: {e}")
 
@@ -55,11 +48,11 @@ def start_data_ingestion():
 
         return jsonify({
             "status": "success",
-            "message": "데이터 인제스트 완료. GitHub에 자동 푸시 중입니다."
+            "message": "데이터 전체 파이프라인 완료. GitHub에 자동 푸시되었습니다."
         }), 200
 
     except Exception as e:
-        print("[ERROR] 인제스트 실패:", e)
+        print("[ERROR] 데이터 인제스트 실패:", e)
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
@@ -72,7 +65,7 @@ def ask():
             return jsonify({"error": "query is required"}), 400
 
         if not os.path.exists(INDEX_PATH) or not os.path.exists(METADATA_PATH):
-            return jsonify({"error": "벡터 인덱스/메타데이터 없음"}), 500
+            return jsonify({"error": "벡터 인덱스/메타데이터가 없습니다"}), 500
 
         print("🔍 질문 처리 중:", query)
 
