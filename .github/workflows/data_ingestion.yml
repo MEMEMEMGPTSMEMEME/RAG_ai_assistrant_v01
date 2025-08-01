@@ -1,0 +1,36 @@
+name: Auto Embed Weekly
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'  # 매주 월요일 오전 4시 (UTC)
+  workflow_dispatch:
+
+jobs:
+  ingest-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Run ingestion pipeline
+      run: |
+        python html_downloader.py
+        python parse_local_html.py
+        python embed.py
+
+    - name: Commit changes
+      run: |
+        git config user.name "rag-bot"
+        git config user.email "bot@rag.local"
+        git add .
+        git commit -m "🔁 auto: weekly vector update"
+        git push https://<YOUR_GITHUB_PAT>@github.com/<YOUR_USERNAME>/<YOUR_REPO>.git

@@ -1,0 +1,77 @@
+# === Python Bytecode ===
+__pycache__/
+*.py[cod]
+*$py.class
+
+# === C extensions ===
+*.so
+
+# === Virtual environments ===
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.Python
+
+# === Build / Distribution ===
+*.egg-info/
+dist/
+build/
+
+# === Installer logs ===
+pip-log.txt
+
+# === Coverage / Testing ===
+htmlcov/
+.tox/
+.nox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
+
+# === Jupyter ===
+.ipynb_checkpoints
+
+# === Environment files ===
+.env
+.env.*
+
+# === Editor / OS / Tooling ===
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === Logs ===
+*.log
+logs/
+
+# === Artifacts ===
+all_links.txt
+download_failed.txt
+
+# === Project generated files ===
+storage/html/
+storage/parsed_docs/
+storage/vector_store/
+*.index
+*.pkl
+
+# === Executables ===
+wget.exe
+chromedriver.exe
+
+# === OS-specific scripts ===
+*.ps1
+*.bat
+
+# === GPT Actions / OpenAPI ===
+gpts_action.json
+action_spec.yaml
